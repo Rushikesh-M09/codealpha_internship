@@ -6,33 +6,29 @@ A collection of experiments for recognizing handwritten characters — starting 
 
 This notebook is organized as a progression of increasingly capable handwriting-recognition approaches, each in its own cell/script:
 
-1. **SVM digit classifier** — a quick baseline using `scikit-learn`'s built-in 8x8 digits dataset
-2. **CNN digit recognizer** — a Keras/TensorFlow convolutional network trained on the full MNIST dataset (28x28 digits)
-3. **CNN letter recognizer** — the same CNN approach extended to the EMNIST "letters" dataset (a–z)
-4. **Video/webcam handwriting-to-text** — an OpenCV pipeline that locates handwritten characters in video frames, classifies them with the trained letter model, and reconstructs lines of text
-5. **Single-image inference script** — a quick test harness to run the trained letter model on one image file
-6. **EMNIST Balanced dataset exploration** — loads and visualizes the 47-class EMNIST Balanced split (digits + uppercase + selected lowercase)
+1. **CNN digit recognizer** — a Keras/TensorFlow convolutional network trained on the full MNIST dataset (28x28 digits)
+2. **CNN letter recognizer** — the same CNN approach extended to the EMNIST "letters" dataset (a–z)
+3. **Video/webcam handwriting-to-text** — an OpenCV pipeline that locates handwritten characters in video frames, classifies them with the trained letter model, and reconstructs lines of text
+4. **Single-image inference script** — a quick test harness to run the trained letter model on one image file
+5. **EMNIST Balanced dataset exploration** — loads and visualizes the 47-class EMNIST Balanced split (digits + uppercase + selected lowercase)
 
 ## Components
 
-### 1. SVM Digit Classifier
-Trains a Support Vector Classifier (`sklearn.svm.SVC`, `gamma=0.001`) on `sklearn.datasets.load_digits()` (1,797 images, 8x8 pixels, digits 0–9). Data is flattened to 64 features per image, split 80/20 (unshuffled), and evaluated with a classification report. The first four test predictions are plotted.
-
-### 2. CNN Digit Recognizer (MNIST)
+### 1. CNN Digit Recognizer (MNIST)
 Trains a CNN on the standard MNIST dataset (60,000 train / 10,000 test, 28x28 grayscale digits).
 
 - **Architecture:** `Conv2D(32) → MaxPool → Conv2D(64) → MaxPool → Flatten → Dropout(0.5) → Dense(10, softmax)`
 - **Training:** Adam optimizer, categorical cross-entropy loss, 10 epochs, batch size 128, 10% validation split
 - **Outputs:** saves the trained model to `digit_recognizer.keras` and training curves to `training_history.png`
 
-### 3. CNN Letter Recognizer (EMNIST Letters)
+### 2. CNN Letter Recognizer (EMNIST Letters)
 Extends the digit model to the EMNIST "letters" split (~145,000 images, 26 case-insensitive classes a–z), loaded via `tensorflow_datasets`. Images are transposed to correct EMNIST's stored orientation.
 
 - **Architecture:** a deeper CNN — `Conv2D(32) → BatchNorm → MaxPool → Conv2D(64) → BatchNorm → MaxPool → Conv2D(128) → BatchNorm → Flatten → Dropout(0.5) → Dense(128) → Dropout(0.3) → Dense(27, softmax)`
 - **Training:** Adam optimizer, categorical cross-entropy, 10 epochs
 - **Outputs:** saves the trained model to `letter_recognizer.keras` and training curves to `letter_training_history.png`
 
-### 4. Video/Webcam Handwriting Recognition
+### 3. Video/Webcam Handwriting Recognition
 A classical computer-vision pipeline (no end-to-end video-to-text model) that:
 
 1. Reads frames from a video file or webcam
@@ -45,17 +41,16 @@ A classical computer-vision pipeline (no end-to-end video-to-text model) that:
 
 **Known limitations** (documented in the script itself): works best on clean, high-contrast, print handwriting filmed straight-on; cursive/joined-up writing will not segment correctly, since the method assumes each character is a separate connected blob. For production OCR on messy real-world input, the script suggests text-detection + sequence-recognition approaches (e.g., EAST + CRNN with CTC loss) or an existing OCR engine (Tesseract, EasyOCR).
 
-### 5. Single-Image Inference
+### 4. Single-Image Inference
 A minimal script that loads `letter_recognizer.keras` and a class mapping from `emnist_classes.txt`, reads a single image (`letters_img.jpg`), inverts/resizes/normalizes it, and prints the predicted character with confidence. Displays the preprocessed image in a window.
 
-### 6. EMNIST Balanced Exploration
+### 5. EMNIST Balanced Exploration
 Loads the EMNIST "balanced" split (47 classes: digits 0–9, uppercase A–Z, and a set of visually distinct lowercase letters) via `tensorflow_datasets`, applies normalization and orientation correction, and visualizes a batch of labeled sample images in a grid.
 
 ## Datasets Used
 
 | Dataset | Source | Classes | Image Size |
 |---|---|---|---|
-| `sklearn.datasets.load_digits` | scikit-learn (built-in) | 10 (digits) | 8x8 |
 | MNIST | `keras.datasets.mnist` (auto-downloaded, ~11MB) | 10 (digits) | 28x28 |
 | EMNIST Letters | `tensorflow_datasets` (`emnist/letters`, auto-downloaded, ~500MB) | 26 (a–z) | 28x28 |
 | EMNIST Balanced | `tensorflow_datasets` (`emnist/balanced`) | 47 (digits + upper + select lower) | 28x28 |
@@ -65,7 +60,6 @@ Loads the EMNIST "balanced" split (47 classes: digits 0–9, uppercase A–Z, an
 ```
 tensorflow            # or tensorflow-macos + tensorflow-metal on Apple Silicon
 tensorflow-datasets
-scikit-learn
 numpy
 matplotlib
 opencv-python
@@ -73,7 +67,7 @@ opencv-python
 
 Install with:
 ```bash
-pip install tensorflow tensorflow-datasets scikit-learn numpy matplotlib opencv-python
+pip install tensorflow tensorflow-datasets numpy matplotlib opencv-python
 ```
 
 ## Usage
