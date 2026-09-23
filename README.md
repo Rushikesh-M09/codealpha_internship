@@ -41,7 +41,3 @@ A progression of handwriting-recognition experiments, moving from a simple basel
 ├── CodeAlpha_Offer_Letter.pdf    # Internship offer letter
 └── Internship_README.md          # This file — internship overview
 ```
-
-## Acknowledgment
-
-Thanks to **CodeAlpha** and **Swati Srivastava (Co-Founder & CEO)** for the opportunity to work on these projects as part of the Machine Learning Internship.
